@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <style>
+    html, * {
+      font-family: mrs-eaves, serif;
+			font-style: normal;
+			font-weight: 400;
+    }
+    
+    @page 	{margin: .5in 0;}   /*-- PDF margin reset --*/
+    body 		{margin: 0;}
+    
+   
+    @media print {
+      .pagebreak {
+        clear: both;
+        page-break-after: always;
+      }
+      .no-print {display: none;}		/*----- Apply this class to any element you do not want on the print view ----*/
+      body {margin: .5in;}					/*----- Adjust this to change the page margins for printing ----*/
+    }
+    
+  </style>
+</head>
+
+<body>
+  <!------   print to PDF bar   ---->
+  <div class="no-print">
+      <ul class="alert" role="alert">
+        <li>
+        	<a href="https://people.planningcenteronline.com/reports/{{ report.id }}.pdf?list_id={{list.id}}" class="btn">Print to PDF</a>
+    		</li>
+    	</ul>    
+    </div>
+  <!----- END print to PDF bar ----->
+  
+ 
+  <h3 class="center-align">
+    Members of The Grove Church
+  </h3>
+  
+  <div>
+    <!-- This outer 'for' loop goes through all the people in the current List -->
+    {% for person in people %}
+      {% if person.membership == "Member" %}
+      <!-- This forces a new 'div row' every few -->
+      {% assign temp = forloop.index0 | modulo:2 %}
+      {% if temp == 0 %}
+      <div class="row">
+      {% endif %}
+      <div class="col s6"> <!-- -->
+        <div class="row valign-wrapper">
+          <div class="col s4">
+            <img class="responsive-img circle" src="{{ person.photo_url}}">  
+          </div>
+          <div class="left-align col s8">
+            <h5>{{ person.first_name }} {{ person.last_name }}</h5>   
+            <p>
+               {% if person.primary_phone_number %}
+               {{ person.primary_phone_number }}<br>
+               {% endif %}
+               {% if person.primary_email %}
+               {{ person.primary_email }}<br>
+               {% endif %}
+               {% if person.primary_address %}
+               {{ person.primary_address.street_line_1 }} {{ person.primary_address.street_line_2 }}<br>
+               {{ person.primary_address.city }}, {{ person.primary_address.state }} {{ person.primary_address.zip }}<br>
+               {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% if forloop.index == forloop.last %}
+      </div>
+      {% endif %}
+    	{% endif %}
+      {% endfor %}     
+  </div>  
+</body>
+</html>
